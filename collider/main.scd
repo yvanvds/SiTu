@@ -29,9 +29,23 @@ s.sampleRate
 
 
 (
-var vw = VowelSynth.new(\yvan, \o);
-vw.start(\52);
+a = VowelSynth.new(\yvan, \o);
+a.start(\52);
+a.stop();
 )
+
+(
+b = VowelSynth.new(\yvan, \o);
+b.start(\40);
+b.stop();
+)
+
+(
+c = VowelSynth.new(\yvan, \o);
+c.start(\59);
+c.stop();
+)
+
 
 
 
