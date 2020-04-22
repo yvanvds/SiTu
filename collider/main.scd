@@ -22,15 +22,49 @@ Require("startup");
 
 // sandbox
 
-~buffer;
+~buffer[\yvan][\o].play;
+~buffer[\yvan][\o].duration
+(
+{
+	var sig, ptr;
+	ptr = Line.ar(0, 3515140, 73.2320833);
+	sig = BufRd.ar(1, ~buffer.bufnum, ptr);
+}.play;
+)
 
 s.sampleRate
 
+MIDIClient.init;
+MIDIIn.connectAll;
 
+(
+a = VowelSynth.new(\yvan, \o, ~out);
+
+MIDIdef.noteOn(\noteOnTest, {
+	arg vel, nn, chan, src;
+	a.play(nn, vel);
+});
+
+
+MIDIdef.noteOff(\noteOffTest, {
+	arg vel, nn;
+	//a.stop();
+});
+)
+
+a.release();
+a.stop();
 
 (
 a = VowelSynth.new(\yvan, \o);
-a.start(\52);
+a.prCalculatePitch(54.5);
+a.start(52);
+a.start(54);
+a.start(54.5);
+a.continue(\52);
+a.continue(\50);
+a.release();
+
 a.stop();
 )
 
@@ -46,7 +80,7 @@ c.start(\59);
 c.stop();
 )
 
-
+52.asSymbol
 
 
 ~makeEvents = {

@@ -12,7 +12,7 @@ VowelSynth {
 	var scale;
 	var synth;
 	var activeSynth = 0;
-	var isPlaying;
+	var <isPlaying;
 
 	var noteID = 0; // used to keep track of which note is playing. Loop is only triggered when the note is still the same.
 
@@ -210,17 +210,11 @@ VowelSynth {
 		modulus = floor % 12;
 		remainder = pitch % 1;
 
-		("floor: "++floor).postln;
-		("remainder: "++remainder).postln;
-		("modules: "++modulus).postln;
-
 		if (
 			remainder > 0.5,
 			{
 				floor = floor + 1;
 				remainder = -1 + remainder;
-				("remainder1: "++remainder).postln;
-				("floor1: "++floor).postln;
 			},{}
 		);
 
@@ -230,8 +224,6 @@ VowelSynth {
 			{
 				floor = floor + 1;
 				remainder = remainder - 1;
-				("remainder2: "++remainder).postln;
-				("floor2: "++floor).postln;
 			}, {}
 		);
 
