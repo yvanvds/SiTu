@@ -67,8 +67,44 @@ VowelSynth {
 				\buf, buffer.bufnum,
 				\amp, currentAmp,
 				\start, start,
-				\end, end,
-				\duration, duration,
+				\speed, currentSpeedAdjust * scale,
+				\gate, 1,
+				\out, out,
+			]
+		);
+
+		SystemClock.sched(duration - 0.1, {
+			this.loop(noteID);
+		});
+	}
+
+	continue {
+		arg pitch, velocity;
+		var pitchData, start, end, duration;
+
+		this.prStopCurrentSynth(0.1);
+		this.prSwitchCurrentSynth();
+
+		noteID = noteID + 1;
+		this.prCalculatePitch(pitch);
+		pitchData = vowel[currentPitch.asSymbol];
+
+		start = pitchData.start + rrand(24000, 48000);
+		end = pitchData.end - rrand(48000, 72000);
+		duration = ((end * scale) - (start * scale)) / buffer.sampleRate / scale;
+		duration = duration * currentSpeedAdjust;
+		currentAmp = velocity.linexp(1, 127, 0.01, 0.3);
+
+		isPlaying = true;
+
+		synth[activeSynth] = Synth.new(
+			\vowel,
+			[
+				\buf, buffer.bufnum,
+				\amp, currentAmp,
+				\start, start,
+				\speed, currentSpeedAdjust * scale,
+				\attack, 0.1,
 				\gate, 1,
 				\out, out,
 			]
@@ -102,8 +138,7 @@ VowelSynth {
 						\buf, buffer.bufnum,
 						\amp, currentAmp,
 						\start, start,
-						\end, end,
-						\duration, duration,
+						\speed, currentSpeedAdjust * scale,
 						\attack, 0.1,
 						\gate, 1,
 						\out, out,
@@ -123,43 +158,7 @@ VowelSynth {
 		isPlaying = false;
 	}
 
-	continue {
-		arg pitch, velocity;
-		var pitchData, start, end, duration;
 
-		this.prStopCurrentSynth(0.1);
-		this.prSwitchCurrentSynth();
-
-		noteID = noteID + 1;
-		this.prCalculatePitch(pitch);
-		pitchData = vowel[currentPitch.asSymbol];
-
-		start = pitchData.start + rrand(24000, 48000);
-		end = pitchData.end - rrand(48000, 72000);
-		duration = ((end * scale) - (start * scale)) / buffer.sampleRate / scale;
-		duration = duration * currentSpeedAdjust;
-		currentAmp = velocity.linexp(1, 127, 0.01, 0.3);
-
-		isPlaying = true;
-
-		synth[activeSynth] = Synth.new(
-			\vowel,
-			[
-				\buf, buffer.bufnum,
-				\amp, currentAmp,
-				\start, start,
-				\end, end,
-				\duration, duration,
-				\attack, 0.1,
-				\gate, 1,
-				\out, out,
-			]
-		);
-
-		SystemClock.sched(duration - 0.1, {
-			this.loop(noteID);
-		});
-	}
 
 	release {
 		var pitchData, start, end, duration;
@@ -169,11 +168,11 @@ VowelSynth {
 
 		pitchData = vowel[currentPitch.asSymbol];
 
-		start = pitchData.end - 48000;
+		start = pitchData.end - 24000;
 		end = pitchData.end;
 		duration = ((end * scale) - (start * scale)) / buffer.sampleRate / scale;
 
-		isPlaying = false;
+		isPlaying = true;
 
 		synth[activeSynth] = Synth.new(
 			\vowel,
@@ -181,13 +180,29 @@ VowelSynth {
 				\buf, buffer.bufnum,
 				\amp, currentAmp,
 				\start, start,
-				\end, end,
-				\duration, duration,
+				\speed, currentSpeedAdjust * scale,
 				\attack, 0.1,
 				\gate, 1,
 			]
 		);
+
+		SystemClock.sched(duration - 0.05, {
+			this.endRelease(noteID);
+		});
 	}
+
+	endRelease {
+		arg id;
+
+		if (
+			noteID == id and: { isPlaying == true }, // true if still playing the same note
+			{
+				this.prStopCurrentSynth(0.05);
+				isPlaying = false;
+			},{}
+		);
+	}
+
 
 	prStopCurrentSynth {
 		arg decay = 0.05;

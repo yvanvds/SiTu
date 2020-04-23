@@ -2,14 +2,15 @@
 	SynthDef(
 		\vowel,
 		{
-			arg amp=0.3, buf, start, end, duration, gate = 0, attack = 0.05, decay = 0.05, out = 0;
-			var sig, ptr, envGen;
+			arg amp=0.3, buf, start, speed, gate = 0, attack = 0.05, decay = 0.05, out = 0;
+			var sig, envGen;
 
 			envGen = EnvGen.kr(Env.asr(attack, 1, decay, 'linear') , gate, doneAction: 2);
 			// Poll.kr(Impulse.kr(40), envGen, \env);
 
-			ptr = Line.ar(start, end, duration, doneAction: 2);
-			sig = BufRd.ar(1, buf, ptr);
+			// ptr = Line.ar(start, end, duration, doneAction: 2);
+			// sig = BufRd.ar(1, buf, ptr);
+			sig = PlayBuf.ar(1, buf, speed, startPos: start, doneAction: 2);
 			sig = sig * amp * envGen;
 
 			Out.ar(out, sig);
