@@ -11,6 +11,9 @@ VowelSynth {
 	var buffer;
 	var scale;
 	var synth;
+
+	var channel;
+
 	var activeSynth = 0;
 	var <isPlaying;
 
@@ -30,6 +33,8 @@ VowelSynth {
 		scale = buffer.sampleRate / ~s.sampleRate;
 		synth = Array.newClear(2);
 		isPlaying = false;
+
+		channel = MixerChannel(singer++vowel, ~s, 1, 1, level: 1);
 	}
 
 	play {
@@ -61,7 +66,7 @@ VowelSynth {
 
 		isPlaying = true;
 
-		synth[activeSynth] = Synth.new(
+		synth[activeSynth] = channel.play(
 			\vowel,
 			[
 				\buf, buffer.bufnum,
@@ -69,7 +74,6 @@ VowelSynth {
 				\start, start,
 				\speed, currentSpeedAdjust * scale,
 				\gate, 1,
-				\out, out,
 			]
 		);
 
@@ -97,7 +101,7 @@ VowelSynth {
 
 		isPlaying = true;
 
-		synth[activeSynth] = Synth.new(
+		synth[activeSynth] = channel.play(
 			\vowel,
 			[
 				\buf, buffer.bufnum,
@@ -106,7 +110,6 @@ VowelSynth {
 				\speed, currentSpeedAdjust * scale,
 				\attack, 0.1,
 				\gate, 1,
-				\out, out,
 			]
 		);
 
@@ -132,7 +135,7 @@ VowelSynth {
 				duration = ((end * scale) - (start * scale)) / buffer.sampleRate / scale;
 				duration = duration * currentSpeedAdjust;
 
-				synth[activeSynth] = Synth.new(
+				synth[activeSynth] = channel.play(
 					\vowel,
 					[
 						\buf, buffer.bufnum,
@@ -141,7 +144,6 @@ VowelSynth {
 						\speed, currentSpeedAdjust * scale,
 						\attack, 0.1,
 						\gate, 1,
-						\out, out,
 					]
 				);
 
@@ -174,7 +176,7 @@ VowelSynth {
 
 		isPlaying = true;
 
-		synth[activeSynth] = Synth.new(
+		synth[activeSynth] = channel.play(
 			\vowel,
 			[
 				\buf, buffer.bufnum,
@@ -201,6 +203,18 @@ VowelSynth {
 				isPlaying = false;
 			},{}
 		);
+	}
+
+	setAmplitude {
+		arg target;
+
+		channel.level = target;
+	}
+
+	setTargetAmplitude {
+		arg target, time;
+
+		channel.levelTo(target, time, DbFaderWarp.asWarp);
 	}
 
 
@@ -273,6 +287,25 @@ VowelSynth {
 					\62->PitchLocation.new(62, 2861903, 3053124),
 					\64->PitchLocation.new(64, 3077858, 3280000),
 					\65->PitchLocation.new(65, 3318433, 3471644),
+				]),
+				\a -> Dictionary.with(
+				*[
+					\40->PitchLocation.new(40, 1168, 126512),
+					\41->PitchLocation.new(41, 165000, 312511),
+					\43->PitchLocation.new(43, 345150, 488548),
+					\45->PitchLocation.new(45, 512749, 666000),
+					\47->PitchLocation.new(47, 682568, 846000),
+					\48->PitchLocation.new(48, 871479, 1024000),
+					\50->PitchLocation.new(50, 1045268, 1207700),
+					\52->PitchLocation.new(52, 1247724, 1400932),
+					\53->PitchLocation.new(53, 1418740, 1586660),
+					\55->PitchLocation.new(55, 1610000, 1773528),
+					\57->PitchLocation.new(57, 1802000, 1978670),
+					\59->PitchLocation.new(59, 2005587, 2165625),
+					\60->PitchLocation.new(60, 2195695, 2352000),
+					\62->PitchLocation.new(62, 2374000, 2516765),
+					\64->PitchLocation.new(64, 2534339, 2676657),
+					\65->PitchLocation.new(65, 2708449, 2864000),
 				]),
 			]),
 		]);

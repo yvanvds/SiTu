@@ -38,5 +38,22 @@
 		}
 	).add;
 
+	SynthDef(
+		\vowelFader,
+		{
+			arg first, second, out = 0, ampStart = 1, ampTarget = 1, fadeDuration = 1, t_trig = 1;
+
+			var sig, line;
+
+			sig = first + second;
+
+			line = Sweep.ar(t_trig, 1/fadeDuration).linexp(0, 1, ampStart, ampTarget, \minmax);
+			line.poll;
+
+			sig = sig * line;
+			Out.ar(out, sig);
+		}
+	).add;
+
 	"... Synths Created".postln;
 }

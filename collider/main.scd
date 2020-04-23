@@ -29,6 +29,7 @@ Require("startup");
 	var sig, ptr;
 	ptr = Line.ar(0, 3515140, 73.2320833);
 	sig = BufRd.ar(1, ~buffer.bufnum, ptr);
+	sig = PlayBuf
 }.play;
 )
 
@@ -55,18 +56,19 @@ MIDIdef.noteOff(\noteOffTest, {
 a.release();
 a.stop();
 
-(
-a = VowelSynth.new(\yvan, \o);
-a.prCalculatePitch(54.5);
-a.start(52);
-a.start(54);
-a.start(54.5);
-a.continue(\52);
-a.continue(\50);
-a.release();
 
+a = Vocalist.new(\yvan, ~out);
+
+
+a.start(62, 100, \o);
+a.start(59, 100, \a);
+a.changeVowel(\o, 3);
+a.changeVowel(\a, 2);
+a.start(54.5, 100);
+a.continue(50, 100, \o);
+a.continue(60, 100, \o);
+a.release();
 a.stop();
-)
 
 (
 b = VowelSynth.new(\yvan, \o);
@@ -81,6 +83,8 @@ c.stop();
 )
 
 52.asSymbol
+
+\exponential.postln;
 
 
 ~makeEvents = {
@@ -117,3 +121,35 @@ SynthDef("help-Dust", { arg out=0;
     )
 }).play;
 )
+
+(
+~def = SynthDef(
+	"TestLine", {
+		arg start, end, duration, t_trig = 1, run = 1;
+		var line;
+
+		line = Sweep.ar(t_trig, run /duration).linexp(0.0, 1, start, end, \minmax);
+		line.poll;
+	}
+).add;
+)
+
+(
+t = Synth.new(
+	\TestLine,
+	[
+		\start, 0.01,
+		\end, 1,
+		\duration, 2,
+	]
+);
+)
+
+t.set(\start, 1, \end, 0.01, \duration, 10, \t_trig, 1);
+t.set(\start, 0.01, \end, 1, \duration, 10, \t_trig, 1);
+t.set(\run, 0);
+t.set(\run, 1);
+t.set(\t_trig, 1);
+t.free;
+
+Quarks.gui

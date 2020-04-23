@@ -24,6 +24,7 @@ Require("nodes");
 
 	~out = 0;
 
+
 	VowelSynth.initClass();
 	"... Variables Set".postln;
 
@@ -43,6 +44,7 @@ Require("nodes");
 		~s.freeAll;
 
 		~s.sync;
+		~master = MixerChannel(\master, ~s, 0, 2, level:1);
 
 		"... Ready to Play".postln;
 	});
