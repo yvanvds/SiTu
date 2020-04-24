@@ -3,6 +3,8 @@
 Quarks.install("Require");
 )
 
+ServerOptions.devices
+
 // 1. load Project classes
 (
 s.quit;
@@ -22,16 +24,13 @@ Require("startup");
 
 // sandbox
 
+v = VocalistController.new(\yvan);
+v.setBpm(70);
+v.setStepsPerBeat(2);
+
 ~buffer[\yvan][\o].play;
 ~buffer[\yvan][\o].duration
-(
-{
-	var sig, ptr;
-	ptr = Line.ar(0, 3515140, 73.2320833);
-	sig = BufRd.ar(1, ~buffer.bufnum, ptr);
-	sig = PlayBuf
-}.play;
-)
+
 
 s.sampleRate
 

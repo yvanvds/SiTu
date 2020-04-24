@@ -2,7 +2,7 @@ VowelSynth {
 	classvar vowels;
 	classvar blackKeys;
 
-	var singer, vowel, out;
+	var singer, vowel;
 
 	var currentPitch;
 	var currentSpeedAdjust;
@@ -20,14 +20,13 @@ VowelSynth {
 	var noteID = 0; // used to keep track of which note is playing. Loop is only triggered when the note is still the same.
 
 	*new {
-		arg singer, vowel, out;
-		^super.new.init(singer, vowel, out);
+		arg singer, vowel;
+		^super.new.init(singer, vowel);
 	}
 
 	init {
-		arg s, v, o;
+		arg s, v;
 		singer = s;
-		out = o;
 		buffer = ~buffer[singer][v];
 		vowel = vowels[s][v];
 		scale = buffer.sampleRate / ~s.sampleRate;

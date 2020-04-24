@@ -1,25 +1,25 @@
 Vocalist {
 	var vowels;
 	var mix;
-	var singer, out;
+	var singer;
+	var <isPlaying = false;
 
 	var currentVowel, currentPitch, currentVelocity;
 
 	*new {
-		arg singer, out;
-		^super.new.init(singer, out);
+		arg singer;
+		^super.new.init(singer);
 	}
 
 	init {
-		arg s, o;
+		arg s;
 
 		singer = s;
-		out = o;
 
 		vowels = Dictionary.with(
 			*[
-				\o->VowelSynth(singer, \o, out),
-				\a->VowelSynth(singer, \a, out),
+				\o->VowelSynth(singer, \o),
+				\a->VowelSynth(singer, \a),
 			]
 		);
 		currentVowel = \o;
@@ -47,6 +47,8 @@ Vocalist {
 				vowels[currentVowel].play(pitch, velocity);
 			}
 		);
+
+		isPlaying = true;
 	}
 
 	start {
@@ -64,6 +66,7 @@ Vocalist {
 		currentVowel = vowel;
 		vowels[currentVowel].setAmplitude(1);
 		vowels[currentVowel].start(pitch, velocity);
+		isPlaying = true;
 	}
 
 	continue {
@@ -81,14 +84,17 @@ Vocalist {
 		currentVowel = vowel;
 		vowels[currentVowel].setAmplitude(1);
 		vowels[currentVowel].continue(pitch, velocity);
+		isPlaying = true;
 	}
 
 	stop {
 		vowels[currentVowel].stop();
+		isPlaying = false;
 	}
 
 	release {
 		vowels[currentVowel].release();
+		isPlaying = false;
 	}
 
 	changeVowel {

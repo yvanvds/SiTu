@@ -13,8 +13,8 @@ Require("nodes");
 ~startup = {
 	~s = Server.local;
 	~s.options.outDevice_(
-		//"MME : Speakers (Realtek High Definiti"
-		"MME : Headphones (UE MEGABOOM Stereo)"
+		"MME : Speakers (Realtek High Definiti"
+		//"MME : Headphones (UE MEGABOOM Stereo)"
 	);
 	~s.options.numOutputBusChannels_(2);
 	~s.options.sampleRate_(44100);
@@ -23,6 +23,7 @@ Require("nodes");
 
 
 	~out = 0;
+	~startTime = Main.elapsedTime.ceil;
 
 
 	VowelSynth.initClass();
