@@ -16,7 +16,7 @@
 			Out.ar(out, sig);
 	}).add;
 
-	SynthDef(
+	/*SynthDef(
 		\reverb,
 		{
 			arg in, predelay=0.1, revtime=0.8, lpf=4500, mix=0.15, amp=1, out=0;
@@ -36,7 +36,7 @@
 			sig = XFade2.ar(dry, wet, mix*2-1, amp);
 			Out.ar(out, sig);
 		}
-	).add;
+	).add;*/
 
 	SynthDef(
 		\vowelFader,

@@ -1,7 +1,7 @@
-Require("busses");
 Require("buffers");
 Require("synthDefs");
-Require("nodes");
+Require("reverb");
+Require("SingersLookupTable");
 
 ~cleanup = {
 	s.newBusAllocators;
@@ -13,8 +13,8 @@ Require("nodes");
 ~startup = {
 	~s = Server.local;
 	~s.options.outDevice_(
-		"MME : Speakers (Realtek High Definiti"
-		//"MME : Headphones (UE MEGABOOM Stereo)"
+		//"MME : Speakers (Realtek High Definiti"
+		"MME : Headphones (UE MEGABOOM Stereo)"
 	);
 	~s.options.numOutputBusChannels_(2);
 	~s.options.sampleRate_(44100);
@@ -29,7 +29,6 @@ Require("nodes");
 	VowelSynth.initClass();
 	"... Variables Set".postln;
 
-	ServerBoot.add(~makeBusses);
 	ServerQuit.add(~cleanup);
 	"... Server Functions Registered".postln;
 
@@ -40,12 +39,15 @@ Require("nodes");
 
 		~s.sync;
 		ServerTree.add(~createSynths);
+		ServerTree.add(~createSingersLookupTable);
 		~s.sync;
-		ServerTree.add(~makeNodes);
+		// ServerTree.add(~makeNodes);
 		~s.freeAll;
 
 		~s.sync;
-		~master = MixerChannel(\master, ~s, 0, 2, level:1);
+		~master = MixerChannel(\master, ~s, 2, 2, level:1);
+
+		~createReverb.value;
 
 		"... Ready to Play".postln;
 	});

@@ -5,21 +5,24 @@ Vocalist {
 	var <isPlaying = false;
 
 	var currentVowel, currentPitch, currentVelocity;
+	var channel;
 
 	*new {
-		arg singer;
-		^super.new.init(singer);
+		arg singer, out, pan;
+		^super.new.init(singer, out, pan);
 	}
 
 	init {
-		arg s;
+		arg s, o, p;
 
 		singer = s;
 
+		channel = MixerChannel(singer, ~s, 2, 2, level: 1, outbus: o);
+
 		vowels = Dictionary.with(
 			*[
-				\o->VowelSynth(singer, \o),
-				\a->VowelSynth(singer, \a),
+				\o->VowelSynth.new(singer, \o, channel, p),
+				\a->VowelSynth.new(singer, \a, channel, p),
 			]
 		);
 		currentVowel = \o;

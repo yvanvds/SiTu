@@ -21,10 +21,42 @@ Require("startup");
 ~s.plotTree;
 )
 
+~singers[\yvan][\max].postln
+
 
 // sandbox
 
-v = VocalistController.new(\yvan);
+a = VocalistGroup.new(\yvan, 4, -0.8, 0.8);
+a.setModus(Scale.minor, 7);
+a.setPitchPattern(Pseq([4, 0], inf));
+a.setVowelPattern(Pseq([\o, \a], inf));
+a.setTimePattern(Pseq([4, 4], inf));
+a.setTimePattern(Pseq([2, 2, 5, Prand([7, 8, 8,8 ,8], 1)], inf));
+a.setAmpMultiplier(0.1);
+
+b = VocalistGroup.new(\yvan, 4, -0.8, 0.8);
+b.setModus(Scale.chromatic, 0);
+b.setPitchPattern(Prand([20, 21, 22, 24], inf));
+a.setPitchPattern(nil);
+b.setTimePattern(Pseq([16, 18], inf));
+b.setVowelPattern(Pseq([\o, \a], inf));
+b.setAmpMultiplier(0.1);
+
+a.setAmpMultiplier(0.8);
+
+(
+a.vocalists.do({
+	arg item, i;
+	item.strategy.setVelocity(100, 127);
+});
+)
+
+a.setBpm(50);
+
+a.strategy.setLength(1, 2);
+a.reverb.level = 0;
+a.reverb.levelTo(1.8, 10);
+
 v.setBpm(70);
 v.setStepsPerBeat(2);
 
@@ -38,7 +70,7 @@ MIDIClient.init;
 MIDIIn.connectAll;
 
 (
-a = VowelSynth.new(\yvan, \o, ~out);
+a = VowelSynth.new(\yvan, \o);
 
 MIDIdef.noteOn(\noteOnTest, {
 	arg vel, nn, chan, src;
@@ -56,7 +88,7 @@ a.release();
 a.stop();
 
 
-a = Vocalist.new(\yvan, ~out);
+a = Vocalist.new(\yvan);
 
 
 a.start(62, 100, \o);
@@ -71,7 +103,7 @@ a.stop();
 
 (
 b = VowelSynth.new(\yvan, \o);
-b.start(\40);
+b.start(40, 100);
 b.stop();
 )
 
@@ -132,6 +164,16 @@ SynthDef("help-Dust", { arg out=0;
 	}
 ).add;
 )
+
+a = Scale.ionian;
+
+    p = Pbind(
+        \degree, Pseq([0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0, \rest], inf),
+        \scale, Pfunc({ a }, inf),
+        \dur, 0.25
+    );
+
+    q = p.stop;
 
 (
 t = Synth.new(
